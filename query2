@@ -1,0 +1,9 @@
+SELECT
+  *
+FROM
+  `tc-da-1.olist_db.olist_orders_dataset` AS orders
+WHERE
+  (order_purchase_timestamp > order_approved_at
+    OR order_approved_at > order_delivered_carrier_date
+    OR order_delivered_carrier_date > order_delivered_customer_date)
+  AND order_status="delivered"
