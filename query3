@@ -1,0 +1,50 @@
+-- Canceled orders
+
+WITH o AS (
+SELECT
+order_id,
+EXTRACT(YEAR
+FROM
+order_purchase_timestamp) AS year,
+EXTRACT(MONTH
+FROM
+order_purchase_timestamp) AS month
+FROM
+`tc-da-1.olist_db.olist_orders_dataset`
+WHERE
+order_status = 'canceled'),
+t1 AS (
+SELECT
+order_id,
+product_id,
+COUNT(order_id) AS num_canceled_orders
+FROM
+`tc-da-1.olist_db.olist_order_items_dataset`
+GROUP BY
+order_id,
+product_id)
+
+SELECT
+year,
+products.product_category_name,
+translation.string_field_1 AS product_category_name_english,
+SUM(t1.num_canceled_orders) AS total_canceled_orders
+FROM o
+JOIN
+t1
+ON
+o.order_id = t1.order_id
+JOIN
+`tc-da-1.olist_db.olist_products_dataset` products
+ON
+t1.product_id = products.product_id
+LEFT JOIN
+`tc-da-1.olist_db.product_category_name_translation` translation
+ON
+products.product_category_name = translation.string_field_0
+GROUP BY
+year,
+products.product_category_name,
+translation.string_field_1
+ORDER BY
+year
