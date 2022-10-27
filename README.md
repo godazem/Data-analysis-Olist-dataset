@@ -47,9 +47,11 @@ Approved >> dropped off by the sender at logistic operator >>> customer received
 Mismatched date entries in the firm’s records indicate some issues that need to be tackled so that the system is more optimized.
 Olist should create a more organized and standardized date reporting system so that all the dates entered would be consistent - not earlier than a previous step timestamp.
 
-2. Customers state is actually their shipping address state (and one customer can have different ones), which is not explicit in the dataset.
-3. Discrepancies between order value and payment amount.
+2. Top 551 sellers (out of 2970) comprise roughly 80% of total revenue. That is ~19% of all sellers, so essentially we can conclude Pareto principle applies in this case, meaning 20% sellers control 80% of the sales and business is doing a good job.
 
+3. Most orders were delivered in 2 weeks (37.73%) after customer’s purchase.
+
+4. 97.63% merchants met the shipping deadline in August 2018, which is very high.
 
 ## Further possible analysis
 My analysis indicated many on-time deliveries (estimated date after delivery date) but it might be happened due to ineffective method for predicting delivery.
