@@ -1,0 +1,23 @@
+-- Order status categories
+
+WITH
+  a AS (
+  SELECT
+    order_status,
+    COUNT(order_id) AS num_orders
+  FROM
+    `tc-da-1.olist_db.olist_orders_dataset` AS orders
+  GROUP BY
+    order_status)
+    
+SELECT
+  a.*,
+  ROUND(num_orders/COUNT(o.order_id)*100,2) AS percentage
+FROM
+  a
+CROSS JOIN
+  `tc-da-1.olist_db.olist_orders_dataset` o
+GROUP BY
+  a.order_status,
+  num_orders
+ORDER BY
