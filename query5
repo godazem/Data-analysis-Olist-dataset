@@ -1,0 +1,66 @@
+-- Shipping limit date
+
+WITH
+a AS (
+SELECT
+oi.seller_id,
+COUNT(DISTINCT o.order_id) AS meet_deadline
+FROM
+`tc-da-1.olist_db.olist_orders_dataset` o
+JOIN
+`tc-da-1.olist_db.olist_order_items_dataset` oi
+ON
+o.order_id = oi.order_id
+WHERE
+order_delivered_carrier_date IS NOT NULL
+AND EXTRACT (month
+FROM
+order_purchase_timestamp) = 8
+AND EXTRACT (year
+FROM
+order_purchase_timestamp) = 2018
+AND TIMESTAMP_DIFF(shipping_limit_date, order_delivered_carrier_date, DAY) >= 0
+GROUP BY
+oi.seller_id),
+
+b AS (
+SELECT
+a.seller_id,
+ROUND(meet_deadline/COUNT(DISTINCT order_id)*100,2) AS percentage
+FROM
+`tc-da-1.olist_db.olist_order_items_dataset`
+JOIN
+a
+ON
+`tc-da-1.olist_db.olist_order_items_dataset`.seller_id = a.seller_id
+GROUP BY
+a.seller_id,
+meet_deadline),
+
+c AS (
+SELECT
+COUNT(DISTINCT seller_id) num_sellers
+FROM
+`tc-da-1.olist_db.olist_orders_dataset` o
+JOIN
+`tc-da-1.olist_db.olist_order_items_dataset` oi
+ON
+o.order_id = oi.order_id
+WHERE
+order_delivered_carrier_date IS NOT NULL
+AND EXTRACT(month
+FROM
+order_purchase_timestamp) = 8
+AND EXTRACT(year
+FROM
+order_purchase_timestamp) = 2018)
+SELECT
+c.num_sellers,
+COUNT(b.seller_id) AS num_meet_deadline,
+ROUND(COUNT(b.seller_id)/c.num_sellers*100,2) AS percentage
+FROM
+b
+CROSS JOIN
+c
+GROUP BY
+c.num_sellers
