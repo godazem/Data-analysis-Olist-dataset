@@ -1,7 +1,7 @@
 # Data analysis of public Olist e-commerce data
 
 ## Introduction
-This repository presents a set of files where I practice my SQL queries on the Olist E-commerce database and also provides some visualisations and insights.
+This repository presents a set of files where I practice my SQL queries using BigQuery on the Olist E-commerce database and also provides some visualisations and insights from this analysis.
 
 
 ## Data
