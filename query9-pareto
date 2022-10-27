@@ -1,0 +1,34 @@
+WITH
+  sellers_sales AS (
+  SELECT
+    DISTINCT(items.seller_id) AS seller_name,
+    seller_city,
+    seller_state,
+    SUM(price + freight_value) AS revenue
+  FROM
+    `tc-da-1.olist_db.olist_order_items_dataset` items
+  INNER JOIN
+    `tc-da-1.olist_db.olist_sellers_dataset` sellers
+  ON
+    items.seller_id = sellers.seller_id
+  INNER JOIN
+    `tc-da-1.olist_db.olist_orders_dataset` orders
+  ON
+    items.order_id = orders.order_id
+  WHERE
+    order_status = 'delivered'
+  GROUP BY
+    1,2,3
+  ORDER BY
+    revenue DESC )
+
+  SELECT
+    seller_name,
+    seller_city,
+    seller_state,
+    revenue
+  FROM
+    sellers_sales
+ORDER BY
+  revenue DESC
+LIMIT 20
