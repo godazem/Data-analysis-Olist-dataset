@@ -1,0 +1,31 @@
+SELECT
+  string_field_1 AS product_category_name,
+  seller_state,
+  TIMESTAMP_DIFF (order_delivered_customer_date, order_purchase_timestamp, DAY) AS delivery_time_duration
+FROM
+  `tc-da-1.olist_db.olist_orders_dataset` orders
+INNER JOIN
+    `tc-da-1.olist_db.olist_order_items_dataset` items
+  ON
+    items.order_id = orders.order_id
+INNER JOIN
+   `tc-da-1.olist_db.olist_products_dataset` products
+  ON
+   items.product_id = products.product_id
+  INNER JOIN
+   `tc-da-1.olist_db.product_category_name_translation` translations
+  ON
+   products.product_category_name = translations.string_field_0
+   INNER JOIN
+    `tc-da-1.olist_db.olist_sellers_dataset` sellers
+  ON
+    items.seller_id = sellers.seller_id
+WHERE
+  order_status = 'delivered'
+  AND order_delivered_customer_date IS NOT NULL
+  AND (order_purchase_timestamp < order_approved_at
+    OR order_approved_at < order_delivered_carrier_date
+    OR order_delivered_carrier_date < order_delivered_customer_date)
+  AND TIMESTAMP_DIFF(order_delivered_customer_date, order_purchase_timestamp, DAY) >= 0
+
+GROUP BY 1,2,3
