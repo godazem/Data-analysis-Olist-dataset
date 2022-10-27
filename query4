@@ -1,0 +1,36 @@
+-- On-time delivery rate
+
+WITH a AS (
+SELECT
+oi.seller_id,
+o.order_purchase_timestamp
+FROM
+`tc-da-1.olist_db.olist_orders_dataset` o
+JOIN
+`tc-da-1.olist_db.olist_order_items_dataset` oi
+ON
+o.order_id = oi.order_id
+WHERE
+order_status = 'delivered'
+AND (order_purchase_timestamp < order_approved_at
+OR order_approved_at < order_delivered_carrier_date
+OR order_delivered_carrier_date < order_delivered_customer_date)
+AND order_delivered_customer_date IS NOT NULL
+AND TIMESTAMP_DIFF(o.order_delivered_customer_date, o.order_estimated_delivery_date, DAY) <= 0)
+
+SELECT
+EXTRACT(YEAR
+FROM
+order_purchase_timestamp) AS year,
+EXTRACT(MONTH
+FROM
+order_purchase_timestamp) AS month,
+COUNT(DISTINCT seller_id) AS num_sellers_ontime
+FROM
+a
+GROUP BY
+year,
+month
+ORDER BY
+year,
+month
