@@ -3,8 +3,6 @@
 ## Introduction
 This repository presents a set of files where I practice my SQL queries on the Olist E-commerce database and also provides some visualisations and insights.
 
-There is a data folder and a photo folder. The Olist database is stored in my local desktop and connected to Jupyter Notebook.
-
 
 ## Data
 The whole database has 11 datasets which contain different information of customers, sellers, orders procedure, etc. This repository, however, does not use all of this data. My chosen area is sellers, so you will see this topic explored deeper with its related datasets.
