@@ -1,0 +1,26 @@
+-- Time of order arrival
+
+SELECT
+  ROUND(SUM(
+    IF
+      (TIMESTAMP_DIFF (order_delivered_customer_date, order_purchase_timestamp, DAY) <= 2,1,0))/ COUNT(order_id)*100,2) AS under_two_days,
+  ROUND(SUM(
+    IF
+      (TIMESTAMP_DIFF (order_delivered_customer_date, order_purchase_timestamp, DAY) BETWEEN 3
+        AND 7,1,0))/ COUNT(order_id)*100,2) AS in_one_week,
+  ROUND(SUM(
+    IF
+      (TIMESTAMP_DIFF (order_delivered_customer_date, order_purchase_timestamp, DAY) BETWEEN 8
+        AND 14,1,0))/ COUNT(order_id)*100,2) AS in_two_weeks,
+  ROUND(SUM(
+    IF
+      (TIMESTAMP_DIFF (order_delivered_customer_date, order_purchase_timestamp, DAY) > 14,1,0))/ COUNT(order_id)*100,2) AS more_than_two_weeks
+FROM
+  `tc-da-1.olist_db.olist_orders_dataset`
+WHERE
+  order_status = 'delivered'
+  AND order_delivered_customer_date IS NOT NULL
+  AND (order_purchase_timestamp < order_approved_at
+    OR order_approved_at < order_delivered_carrier_date
+    OR order_delivered_carrier_date < order_delivered_customer_date)
+  AND TIMESTAMP_DIFF(order_delivered_customer_date, order_purchase_timestamp, DAY) >= 0
